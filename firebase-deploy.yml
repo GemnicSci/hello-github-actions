@@ -1,0 +1,38 @@
+name: Firebase Deploy
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow when code is pushed to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger the workflow when a pull request is opened for the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Node.js (for any frontend-related operations if needed)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Set your preferred Node.js version
+
+      # Install dependencies (this assumes you have a package.json file)
+      - name: Install dependencies
+        run: npm install
+
+      # Set up Firebase CLI (using Firebase GitHub action)
+      - name: Set up Firebase CLI
+        uses: wzieba/Firebase-Action@v2
+        with:
+          firebase_token: ${{ secrets.FIREBASE_AUTH_TOKEN }}
+
+      # Deploy to Firebase Hosting
+      - name: Deploy to Firebase Hosting
+        run: firebase deploy --only hosting --project your-firebase-project-id
